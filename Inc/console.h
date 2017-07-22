@@ -14,7 +14,7 @@
 #define PARAMETER_SEPARATER		(' ')
 #define STR_ENDLINE "\r\n"
 
-// Salled from higher up areas of the code (main)
+// Called from higher up areas of the code (main)
 void ConsoleInit(void);
 void ConsoleProcess(void); // call this in a loop
 

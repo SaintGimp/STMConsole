@@ -36,10 +36,17 @@ eConsoleError ConsoleIoReceive(uint8_t *buffer, const uint32_t bufferLength, uin
 		buffer[i] = (uint8_t) ch;
 		i++;
 
-		printf("%c", ch);
-		if (ch == '\r')
+		if (ch == 127)
 		{
-			printf("\n");
+			printf("\b \b");
+		}
+		else
+		{
+			printf("%c", ch);
+			if (ch == '\r')
+			{
+				printf("\n");
+			}
 		}
 	}
 	*readLength = i;

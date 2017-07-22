@@ -25,6 +25,7 @@ char mReceiveBuffer[CONSOLE_COMMAND_MAX_LENGTH];
 uint32_t mReceivedSoFar;
 
 // local functions
+void ConsoleHandleDelete(char* buffer, uint32_t* numberOfCharacters);
 static int32_t ConsoleCommandEndline(const char receiveBuffer[], const  uint32_t filledLength);
 
 static uint32_t ConsoleCommandMatch(const char* name, const char *buffer);
@@ -141,6 +142,7 @@ void ConsoleProcess(void)
 	if ( received > 0u )
 	{
 		mReceivedSoFar += received;
+		ConsoleHandleDelete(mReceiveBuffer, &mReceivedSoFar);
 		cmdEndline = ConsoleCommandEndline(mReceiveBuffer, mReceivedSoFar);
 		if ( cmdEndline >= 0 )  // have complete string, find command
 		{
@@ -180,6 +182,22 @@ void ConsoleProcess(void)
 			}
 			mReceivedSoFar = ConsoleResetBuffer(mReceiveBuffer, mReceivedSoFar, cmdEndline);
 			ConsoleIoSendString(CONSOLE_PROMPT);
+		}
+	}
+}
+
+void ConsoleHandleDelete(char* buffer, uint32_t* numberOfCharacters)
+{
+	for (int x = 0; x < *numberOfCharacters; x++)
+	{
+		if (buffer[x] == 0x08 || buffer[x] == 0x7F)
+		{
+			for (int y = x + 1; y < *numberOfCharacters; y++)
+			{
+				buffer[y - 2] = buffer[y];
+			}
+			*numberOfCharacters = *numberOfCharacters > 1 ? *numberOfCharacters - 2 : 0;
+			buffer[*numberOfCharacters] = NULL_CHAR;
 		}
 	}
 }
