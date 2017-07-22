@@ -13,13 +13,14 @@
 #include "console.h"
 #include "consoleIo.h"
 #include "version.h"
+#include "app.h"
 
 #define IGNORE_UNUSED_VARIABLE(x)     if ( &x == &x ) {}
 
 static eCommandResult_T ConsoleCommandComment(const char buffer[]);
 static eCommandResult_T ConsoleCommandVer(const char buffer[]);
 static eCommandResult_T ConsoleCommandHelp(const char buffer[]);
-static eCommandResult_T ConsoleCommandParamExampleInt16(const char buffer[]);
+static eCommandResult_T ConsoleCommandSetBlinkRate(const char buffer[]);
 static eCommandResult_T ConsoleCommandParamExampleHexUint16(const char buffer[]);
 
 static const sConsoleCommandTable_T mConsoleCommandTable[] =
@@ -27,7 +28,7 @@ static const sConsoleCommandTable_T mConsoleCommandTable[] =
     {";", &ConsoleCommandComment, HELP("Comment! You do need a space after the semicolon. ")},
     {"help", &ConsoleCommandHelp, HELP("Lists the commands available")},
     {"ver", &ConsoleCommandVer, HELP("Get the version string")},
-    {"int", &ConsoleCommandParamExampleInt16, HELP("How to get a signed int16 from params list: int -321")},
+    {"set-blink-rate", &ConsoleCommandSetBlinkRate, HELP("Sets the LED blink rate in ms: set-blink-rate 500")},
     {"u16h", &ConsoleCommandParamExampleHexUint16, HELP("How to get a hex u16 from the params list: u16h aB12")},
 
 	CONSOLE_COMMAND_TABLE_END // must be LAST
@@ -61,18 +62,17 @@ static eCommandResult_T ConsoleCommandHelp(const char buffer[])
 	return result;
 }
 
-static eCommandResult_T ConsoleCommandParamExampleInt16(const char buffer[])
+static eCommandResult_T ConsoleCommandSetBlinkRate(const char buffer[])
 {
-	int16_t parameterInt;
+	int16_t blinkRate;
 	eCommandResult_T result;
-	result = ConsoleReceiveParamInt16(buffer, 1, &parameterInt);
+	result = ConsoleReceiveParamInt16(buffer, 1, &blinkRate);
 	if ( COMMAND_SUCCESS == result )
 	{
-		ConsoleIoSendString("Parameter is ");
-		ConsoleSendParamInt16(parameterInt);
-		ConsoleIoSendString(" (0x");
-		ConsoleSendParamHexUint16((uint16_t)parameterInt);
-		ConsoleIoSendString(")");
+		SetBlinkRate(blinkRate);
+		ConsoleIoSendString("Blink rate set to ");
+		ConsoleSendParamInt16(blinkRate);
+		ConsoleIoSendString("ms.");
 		ConsoleIoSendString(STR_ENDLINE);
 	}
 	return result;

@@ -8,6 +8,7 @@
 
 uint32_t lastRun = 0U;
 uint32_t nowTime;
+uint16_t blinkRateInMs = 500;
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
@@ -24,10 +25,16 @@ void ApplicationLoop()
 		ConsoleProcess();
 
 		nowTime = HAL_GetTick();
-		if ((nowTime - lastRun) >= HALF_SECOND * 2)
+		if ((nowTime - lastRun) >= blinkRateInMs)
 		{
 			HAL_GPIO_TogglePin( LD4_GPIO_Port, LD4_Pin);
 			lastRun = nowTime;
 		}
 	}
 }
+
+void SetBlinkRate(uint16_t newBlinkRateInMs)
+{
+	blinkRateInMs = newBlinkRateInMs;
+}
+

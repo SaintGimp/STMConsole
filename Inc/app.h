@@ -9,5 +9,6 @@
 #define APP_H_
 
 void ApplicationLoop();
+void SetBlinkRate(uint16_t newBlinkRateInMs);
 
 #endif /* APP_H_ */
