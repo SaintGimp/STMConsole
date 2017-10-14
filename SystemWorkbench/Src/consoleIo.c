@@ -22,6 +22,9 @@ eConsoleError ConsoleIoInit(void)
 
 	// Prevent buffering of printf so everything gets sent immediately
 	setbuf(stdout, NULL);
+    setvbuf(stdin, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IONBF, 0);
+	setvbuf(stderr, NULL, _IONBF, 0);
 
 	return CONSOLE_SUCCESS;
 }
